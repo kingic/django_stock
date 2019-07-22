@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="ko">
+  <head>
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/grid.css' %}">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 위 3개의 메타 태그는 *반드시* head 태그의 처음에 와야합니다; 어떤 다른 콘텐츠들은 반드시 이 태그들 *다음에* 와야 합니다 -->
+    <title>stock watcher</title>
+
+
+
+  </head>
+  <body>
+    <h1>
+      <!--<a href="http://localhost:8000/polls/stock">
+        <img src="{% static 'polls/images/background.gif' %}" alt="Stock watcher" />
+      </a> -->
+    </h1>
+    <div class="header">
+      <form action="/polls/stock_result" method="get">
+      <label for="stock_name">종목명: </label>
+      <input id="stock_name" type="text" name="stock_name" value="">
+
+      <span><label for="stock_code">종목코드: </label>
+      <input id="stock_code" type="text" name="stock_code" value=""></span>
+      <input type="submit" value="조회">
+      </form>
+    </div>
+
+    <!-- 사이드 메뉴 -->
+    <div class="sidebar">
+      <a class="active" href="http://localhost:8000/polls/stock">Home</a>
+      <a class="active" href="http://localhost:8000/polls/stock_result?stock_name=&stock_code=">전체 종목</a>
+      {% if industry_names %}
+        {% for code, name in industry_names %}
+          <a href="http://localhost:8000/polls/stock_result?industry_code={{code}}">{{name}}</a>
+        {% endfor %}
+      {% endif %}
+    </div>
+    <!-- 사이드 메뉴 end -->
+
+    <table class="wrapper">
+      <tr id="title">
+        <td class="item">
+        종목명
+        </td>
+        <td class="item">
+        종목코드
+        </td>
+        <td class="item">
+        현재가
+        </td>
+      </tr>
+      {% if select_list %}
+        {% for select in select_list %}
+      <tr>
+        <td class="item">
+            {{select.name}}
+        </td>
+        <td class="item">
+            {{select.code}}
+        </td>
+        <td class="item">
+            {{select.cprice}}
+        </td>
+      </tr>
+        {% endfor%}
+      {% endif %}
+    </table>
+
+    <div class="footer">
+    Copyright 2018
+    </div>
+    </body>
+
+    <!-- jQuery (부트스트랩의 자바스크립트 플러그인을 위해 필요합니다) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <!-- 모든 컴파일된 플러그인을 포함합니다 (아래), 원하지 않는다면 필요한 각각의 파일을 포함하세요 -->
+    <!--<script src="js/bootstrap.min.js"></script>-->
+  </body>
+</html>

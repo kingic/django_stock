@@ -1,0 +1,95 @@
+body {
+    background: #478dee;
+    margin: 5px;
+    padding: 0px;
+
+    font-family: -apple-system, BlinkMacSystemFont,
+
+“Segoe UI”, “Roboto”, “Oxygen”, “Ubuntu”, “Cantarell”,
+
+“Fira Sans”, “Droid Sans”, “Helvetica Neue”,
+sans-serif;
+
+    display: grid;
+    grid-gap: 0.2vw;
+    height: 100vh;
+    grid-template-columns: 300px 1fr;
+    grid-template-rows: 120px 1fr 61px;
+    grid-template-areas: "header header"
+                         "sidebar content"
+                         "footer footer";
+}
+
+
+div.header {
+    text-transform: uppercase;
+    background: #478dee;
+}
+
+
+div.sidebar {
+    grid-area: sidebar;
+    margin: 0;
+    padding: 0;
+    width: 200px;
+    background-color: #aba9b3;
+    height: 100%;
+    overflow: auto;
+    border: solid;
+}
+.sidebar a {
+  display: block;
+  color: black;
+  padding: 16px;
+  text-decoration: none;
+}
+.sidebar a.active {
+  background-color: #4C58AF;
+  color: white;
+}
+.sidebar a:hover {
+  background-color: #555;
+  color: white;
+}
+
+
+
+div.footer {
+    grid-area: footer;
+    background: #3581eb;
+}
+div.main {
+    display: grid;
+    grid-gap: 0.2vw;
+    grid-template-columns: 1fr 1fr 1fr;
+
+}
+
+.wrapper {
+  /*display: table;*/
+  /*grid-template-columns: repeat(3, auto);*/
+  background-color: #478dee;
+  color: #444;
+  max-width:  800px;
+  /*margin: 0 0 0 200px;*/
+}
+
+.wrapper tr:nth-of-type(odd) td{
+    background-color: #f2f2f2;
+    color: black;
+}
+
+#title td{
+    text-align: center;
+    background-color: #3778d2;
+}
+
+.item {
+  background-color: #444;
+  color: #fff;
+  border-radius: 5px;
+  height: 50px;
+  padding: 20px;
+  font-size: 150%;
+}
+
