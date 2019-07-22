@@ -58,29 +58,6 @@ def vote(request, question_id):
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
 
 
-def history(request):
-    return render(request, 'polls/history.html')
-
-
-# K-FS 연습
-def company00(request):
-    return render(request, 'polls/company00.html')
-
-
-# K-FS 연습
-def company01(request):
-    return render(request, 'polls/company01.html')
-
-
-# K-FS 연습
-def company02(request):
-    return render(request, 'polls/company02.html')
-
-
-# K-FS 연습
-def business00(request):
-    return render(request, 'polls/business00.html')
-
 
 """
 def stockwatch(request):
