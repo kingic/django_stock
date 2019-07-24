@@ -143,7 +143,7 @@ def stock_result(request):
 
     context = {'select_list': s, 'industry_names': industry_name}
     return render(request, 'polls/csstest.html', context)
-
+# git test
 
 # db 내용 추가(초기에 1회만 실행해주면 됨) / url:polls/stock_add
 def db_add(request):
