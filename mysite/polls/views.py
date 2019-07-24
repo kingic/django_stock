@@ -122,7 +122,7 @@ def stock_result(request):
                 time_buf = str(objStockMst.GetDataValue(2, index)).zfill(4)  # 갱신시각 받아온 후 4자리 채움(9:00일 경우 09:00)
                 s_p.last_update = time_buf[:2] + ':' + time_buf[2:4]        # Cybos time format -> django time format
                 # 반영 하는지 test
-                print("1",s_p.name, s_p.cprice, s_p.industry_code, s_p.diff, s_p.last_update)
+                # print("1",s_p.name, s_p.cprice, s_p.industry_code, s_p.diff, s_p.last_update)
                 s_p.save()                                          # 변경 사항 DB에 저장
             code_string = ""
             continue

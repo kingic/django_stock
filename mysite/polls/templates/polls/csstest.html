@@ -104,20 +104,12 @@
               else{
                 num[i].style.color="blue";
               }
-
-
-              num[i].innerHTML = numberWithCommas(num[i].innerHTML);
-              item_num[i].innerHTML = numberWithCommas(item_num[i].innerHTML);
+              num[i].innerHTML = num[i].innerHTML.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              item_num[i].innerHTML = item_num[i].innerHTML.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
               num[i].innerHTML += "(" + dif + "%)";
               console.log('complete',i)
             }
             console.log('java complete!')
-
-
-            function numberWithCommas(x){
-              return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            }
-
     </script>
     <!-- 모든 컴파일된 플러그인을 포함합니다 (아래), 원하지 않는다면 필요한 각각의 파일을 포함하세요 -->
     <!--<script src="js/bootstrap.min.js"></script>-->
