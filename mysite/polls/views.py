@@ -13,6 +13,7 @@ from .models import Choice, Question
 # Create your views here.
 
 
+# 장고 예제
 class IndexView(generic.ListView):
     template_name = 'polls/csstest.html'
     context_object_name = 'latest_question_list'
@@ -22,6 +23,7 @@ class IndexView(generic.ListView):
         return Question.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')[:5]
 
 
+# 장고 예제
 class DetailView(generic.DetailView):
     model = Question
     template_name = 'polls/detail.html'
@@ -34,6 +36,7 @@ class DetailView(generic.DetailView):
         return Question.objects.filter(pub_date__lte=timezone.now())
 
 
+# 장고 예제
 class ResultsView(generic.DetailView):
     model = Question
     template_name = 'polls/results.html'
@@ -58,37 +61,27 @@ def vote(request, question_id):
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
 
 
-
-"""
+# 초기화면
 def stockwatch(request):
-    return render(request, 'polls/csstest.html')
-"""
-
-
-def get_name(request):
-    if request.method == 'POST':
-        form = StockForm(request.POST)
-
-        if form.is_valid():
-
-            return HttpResponseRedirect('/thanks/')
-
-    else:
-        form = StockForm()
-
-    print(form)
-
-    return render(request, 'csstest.html', {})
-
-
-def stock_result(request):
-
-
     pythoncom.CoInitialize()
-    objCpCybos = win32com.client.Dispatch("CpUtil.CpCybos")
     objCpCodeMgr = win32com.client.Dispatch("CpUtil.CpCodeMgr")
-    objStockMst = win32com.client.Dispatch("DsCbo1.StockMstM")  # 복수 종목 검색
-    objStockMst1 = win32com.client.Dispatch("DsCbo1.StockMst")  # 단일 종목 검색
+    # 기본 사이드 바 메뉴 list
+    industry_list = Search.objects.values_list('industry_code', flat=True).distinct().order_by('industry_code')
+    industry_name = []
+
+    for code in industry_list:
+        industry_name.append((code, objCpCodeMgr.GetIndustryName(code)))
+    pythoncom.CoUninitialize()
+    return render(request, 'polls/csstest.html', {'industry_names': industry_name})
+
+
+# retrieve
+def stock_result(request):
+    pythoncom.CoInitialize()
+    objCpCybos = win32com.client.Dispatch("CpUtil.CpCybos")      # 연결
+    objCpCodeMgr = win32com.client.Dispatch("CpUtil.CpCodeMgr")  # 종목 리스트
+    objStockMst = win32com.client.Dispatch("DsCbo1.StockMstM")   # 복수 종목 검색
+    objStockMst1 = win32com.client.Dispatch("DsCbo1.StockMst")   # 단일 종목 검색
 
     bConnect = objCpCybos.IsConnect
     if bConnect == 0:
@@ -97,6 +90,7 @@ def stock_result(request):
     else:
         print("PLUS가 정상적으로 연결됨. ")
 
+    # get user request
     search_name = request.GET.get('stock_name', '')
     search_code = request.GET.get('stock_code', '')
     search_ic = request.GET.get('industry_code', '')
@@ -107,32 +101,43 @@ def stock_result(request):
     for code in industry_list:
         industry_name.append((code, objCpCodeMgr.GetIndustryName(code)))
 
-    # 사이드바 메뉴 선택 시
-    if search_ic != '':
-        select_list = Search.objects.filter(industry_code=search_ic).order_by('code')
-        return render(request, 'polls/csstest.html', {'select_list': select_list, 'industry_names': industry_name})
-
     # 종목명 / 종목코드 관련 검색
     code_string = ""
     select_list = Search.objects.all()
-    s = select_list.filter(name__icontains=search_name, code__icontains=search_code)
+    s = select_list.filter(name__icontains=search_name, code__icontains=search_code, industry_code__icontains=search_ic)
+    print("through....s:", s.count())
 
-    # 검색 종목에 대한 현재가 업데이트(110개 단위로)
+    # 검색 종목에 대한 DB 업데이트(110개 단위로)
     for s_obj in s:
         code_string += s_obj.code
-        if len(code_string) == 110:
-            objStockMst.SetInputValue(0, code_string)  # 전체 종목에 대한 코드 반환 (max = 110)
+        if len(code_string) == 770:                     # (전체 종목: 110개) * (종목 당 character: 7글자)
+            objStockMst.SetInputValue(0, code_string)   # 전체 종목에 대한 코드 반환 (max = 110)
             objStockMst.BlockRequest()
             count = objStockMst.GetHeaderValue(0)
             for index in range(count):
-                s_p = Search.objects.get(code=objStockMst.GetDataValue(0, index))
-                s_p.cprice = objStockMst.GetDataValue(4, index)
-
-                # print(s_p.name, s_p.cprice, s_p.industry_code)
-                s_p.save()
-
+                get_code = objStockMst.GetDataValue(0, index)       # 종목 List 에서 순차적으로 종목코드 탐색
+                s_p = Search.objects.get(code=get_code)             # 해당 종목코드로 search (DB 탐색)
+                s_p.cprice = objStockMst.GetDataValue(4, index)     # 해당 종목 현재가 Instance 업데이트
+                s_p.diff = objStockMst.GetDataValue(2, index)       # 해당 종목 전일대비 Instance 업데이트
+                # 반영 하는지 test
+                print("1",s_p.name, s_p.cprice, s_p.industry_code, s_p.diff)
+                s_p.save()                                          # 변경 사항 DB에 저장
             code_string = ""
             continue
+
+    # 전체종목 % 110개 만큼의 종목들에 대한 DB 업데이트
+    if len(code_string) > 0:
+        objStockMst.SetInputValue(0, code_string)
+        objStockMst.BlockRequest()
+        count = objStockMst.GetHeaderValue(0)
+        for index in range(count):
+            get_code = objStockMst.GetDataValue(0,index)
+            s_p = Search.objects.get(code=get_code)
+            s_p.cprice = objStockMst.GetDataValue(4, index)
+            s_p.diff = objStockMst.GetDataValue(2, index)
+            # 반영 하는지 test
+            print("2",s_p.name, s_p.cprice, s_p.industry_code, s_p.diff)
+            s_p.save()
 
     pythoncom.CoUninitialize()
 
@@ -152,7 +157,6 @@ def db_add(request):
         exit()
 
     # 종목코드 리스트 구하기
-    objCpCodeMgr = win32com.client.Dispatch("CpUtil.CpCodeMgr")
     objStockMst = win32com.client.Dispatch("DsCbo1.StockMst")
     objCpCodeMgr = win32com.client.Dispatch("CpUtil.CpCodeMgr")
     codeList = objCpCodeMgr.GetStockListByMarket(1)  # 거래소
@@ -170,96 +174,4 @@ def db_add(request):
 
     pythoncom.CoUninitialize()
     return render(request, 'polls/csstest.html')
-
-
-"""
-def ReqeustUpjongMst(self):
-    pythoncom.CoInitialize()
-    g_objCodeMgr = win32com.client.Dispatch("CpUtil.CpCodeMgr")
-    codeList = g_objCodeMgr.GetIndustryList()  # 증권 산업 업종 리스트
-
-    allcodelist = codeList
-    print("전체 종목 코드 #", len(allcodelist))
-
-    rqCodeList = []
-    for i, code in enumerate(allcodelist):
-        code2 = "U" + code
-        rqCodeList.append(code2)
-        if len(rqCodeList) == 200:
-            self.obj.Request(rqCodeList, self.dicUpjongCodes)
-            rqCodeList = []
-            continue
-
-    if len(rqCodeList) > 0:
-        self.obj.Request(rqCodeList, self.dicUpjongCodes)
-
-    print("증권산업업종 리스트", len(self.dicUpjongCodes))
-    for key in self.dicUpjongCodes:
-        self.dicUpjongCodes[key].debugPrint(1)
-"""
-
-
-"""
-def upjong_add(request):
-    pythoncom.CoInitialize()
-    objCpCybos = win32com.client.Dispatch("CpUtil.CpCybos")
-    bConnect = objCpCybos.IsConnect
-    if (bConnect == 0):
-        print("PLUS가 정상적으로 연결되지 않음. ")
-        exit()
-    else:
-        print("PLUS가 정상적으로 연결됨. ")
-
-    objCpCodeMgr = win32com.client.Dispatch("CpUtil.CpCodeMgr")
-    codelist = objCpCodeMgr.GetIndustryList()
-
-    for i, code in enumerate(codelist):
-        it_name = objCpCodeMgr.GetIndustryName(code)
-        if Search.objects.get(industry_code=code).exists():
-            db = Search.objects.get(industry_code=code)
-            db.upjong_set.create(industry_cd=code, industry_name=it_name)
-            continue
-        else:
-            continue
-
-    pythoncom.CoUninitialize()
-    return render(request, 'polls/csstest.html')
-
-"""
-
-"""
-def search_by_ic(request):
-    industry_code = request.GET.get('industry_code', '')
-    industry_list = Search.objects.values_list('industry_code', flat=True).distinct().order_by('industry_code')
-    industry_name = []
-
-    pythoncom.CoInitialize()
-    objCpCybos = win32com.client.Dispatch("CpUtil.CpCybos")
-    objCpCodeMgr = win32com.client.Dispatch("CpUtil.CpCodeMgr")
-    bConnect = objCpCybos.IsConnect
-    if (bConnect == 0):
-        print("PLUS가 정상적으로 연결되지 않음. ")
-        exit()
-    else:
-        print("PLUS가 정상적으로 연결됨. ")
-
-    for code in industry_list:
-        industry_name.append(objCpCodeMgr.GetIndustryName(code))
-    pythoncom.CoUninitialize()
-
-    return render(request, 'polls/csstest.html', {'industry_names': industry_name})
-"""
-
-
-
-
-
-
-
-
-
-
-
-
-
 
