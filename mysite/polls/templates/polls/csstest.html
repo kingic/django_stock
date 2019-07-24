@@ -93,6 +93,7 @@
             var item_num = document.getElementsByClassName('cprice');
             var num = document.getElementsByClassName('diff');
             var dif = 0;
+            console.log('java working...')
             for (i=0;i<num.length;i++){
               dif = Number((num[i].innerText)/(Number(item_num[i].innerText) - Number(num[i].innerText)));
               dif *= 100;
@@ -109,6 +110,7 @@
               item_num[i].innerText = numberWithCommas(item_num[i].innerText);
               num[i].innerText += "(" + dif + "%)";
             }
+            console.log('java complete!')
 
 
             function numberWithCommas(x){
