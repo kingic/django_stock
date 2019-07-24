@@ -123,7 +123,7 @@ def stock_result(request):
                 s_p.last_update = time_buf[:2] + ':' + time_buf[2:4]        # Cybos time format -> django time format
                 # 반영 하는지 test
                 print("1",s_p.name, s_p.cprice, s_p.industry_code, s_p.diff, s_p.last_update)
-                # s_p.save()                                          # 변경 사항 DB에 저장
+                s_p.save()                                          # 변경 사항 DB에 저장
             code_string = ""
             continue
 

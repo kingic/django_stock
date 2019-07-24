@@ -12,6 +12,7 @@ urlpatterns = [
     path('stock_result/', views.stock_result, name='stock_result'),     # 검색 결과 rendering 화면
     # path('stock_add', views.db_add, name='db_update'),
     # stock_add 는 초기에 DB에 모든 종목 넣는 용도로 사용.(한번만 사용하고 주석으로 잠그자)
-    # git test
+    # branch test
+    # branch change test
 
 ]
