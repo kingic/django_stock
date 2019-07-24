@@ -42,6 +42,7 @@ class ResultsView(generic.DetailView):
     template_name = 'polls/results.html'
 
 
+# 장고 예제
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     try:
@@ -101,7 +102,7 @@ def stock_result(request):
     for code in industry_list:
         industry_name.append((code, objCpCodeMgr.GetIndustryName(code)))
 
-    # 종목명 / 종목코드 관련 검색
+    # 검색내역 DB에서 GET
     code_string = ""
     select_list = Search.objects.all()
     s = select_list.filter(name__icontains=search_name, code__icontains=search_code, industry_code__icontains=search_ic)
@@ -122,8 +123,8 @@ def stock_result(request):
                 time_buf = str(objStockMst.GetDataValue(2, index)).zfill(4)  # 갱신시각 받아온 후 4자리 채움(9:00일 경우 09:00)
                 s_p.last_update = time_buf[:2] + ':' + time_buf[2:4]        # Cybos time format -> django time format
                 # 반영 하는지 test
-                print("1",s_p.name, s_p.cprice, s_p.industry_code, s_p.diff, s_p.last_update)
-                # s_p.save()                                          # 변경 사항 DB에 저장
+                # print("1",s_p.name, s_p.cprice, s_p.industry_code, s_p.diff, s_p.last_update)
+                s_p.save()                                          # 변경 사항 DB에 저장
             code_string = ""
             continue
 
@@ -143,6 +144,7 @@ def stock_result(request):
             # 반영 하는지 test
             # print("1", s_p.name, s_p.cprice, s_p.industry_code, s_p.diff, s_p.last_update)
             s_p.save()
+        print("DB Update Complete")
 
     pythoncom.CoUninitialize()
 
