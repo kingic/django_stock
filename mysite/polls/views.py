@@ -167,7 +167,7 @@ def db_add(request):
         name = objCpCodeMgr.CodeToName(code)
         stdPrice = objCpCodeMgr.GetStockStdPrice(code)
         industry = objCpCodeMgr.GetStockIndustryCode(code)
-        db = Search.objects.get(name=name, code=code)
+        db = Search(name=name, code=code)
         db.industry_code = industry
         db.industry_name = objCpCodeMgr.GetIndustryName(industry)
         db.save()
