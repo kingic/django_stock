@@ -95,7 +95,7 @@
             var dif = 0;
             console.log('java working...')
             for (i=0;i<num.length;i++){
-              dif = Number((num[i].innerText)/(Number(item_num[i].innerText) - Number(num[i].innerText)));
+              dif = Number((num[i].innerHTML)/(Number(item_num[i].innerHTML) - Number(num[i].innerHTML)));
               dif *= 100;
               dif = dif.toFixed(2);
               if(Number(num[i].innerText) > 0){
@@ -104,19 +104,12 @@
               else{
                 num[i].style.color="blue";
               }
-
-
-              num[i].innerText = numberWithCommas(num[i].innerText);
-              item_num[i].innerText = numberWithCommas(item_num[i].innerText);
-              num[i].innerText += "(" + dif + "%)";
+              num[i].innerHTML = num[i].innerHTML.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              item_num[i].innerHTML = item_num[i].innerHTML.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              num[i].innerHTML += "(" + dif + "%)";
+              console.log('complete',i)
             }
             console.log('java complete!')
-
-
-            function numberWithCommas(x){
-              return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            }
-
     </script>
     <!-- 모든 컴파일된 플러그인을 포함합니다 (아래), 원하지 않는다면 필요한 각각의 파일을 포함하세요 -->
     <!--<script src="js/bootstrap.min.js"></script>-->
