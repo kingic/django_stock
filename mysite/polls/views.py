@@ -115,16 +115,15 @@ def stock_result(request):
             objStockMst.BlockRequest()
             count = objStockMst.GetHeaderValue(0)
             for index in range(count):
-                get_code = objStockMst.GetDataValue(0, index)       # 종목 List 에서 순차적으로 종목코드 탐색
-                s_p = Search.objects.get(code=get_code)             # 해당 종목코드로 search (DB 탐색)
-                s_p.cprice = objStockMst.GetDataValue(3, index)     # 해당 종목 현재가 Instance 업데이트
-                s_p.diff = objStockMst.GetDataValue(4, index)       # 해당 종목 전일대비 Instance 업데이트
-                time_buf = str(objStockMst.GetDataValue(2, index)).zfill(4)
-                s_p.last_update = time_buf[:2] + ':' + time_buf[2:4]
+                get_code = objStockMst.GetDataValue(0, index)               # 종목 List 에서 순차적으로 종목코드 탐색
+                s_p = Search.objects.get(code=get_code)                     # 해당 종목코드로 search (DB 탐색)
+                s_p.cprice = objStockMst.GetDataValue(3, index)             # 해당 종목 현재가 Instance 업데이트
+                s_p.diff = objStockMst.GetDataValue(4, index)               # 해당 종목 전일대비 Instance 업데이트
+                time_buf = str(objStockMst.GetDataValue(2, index)).zfill(4)  # 갱신시각 받아온 후 4자리 채움(9:00일 경우 09:00)
+                s_p.last_update = time_buf[:2] + ':' + time_buf[2:4]        # Cybos time format -> django time format
                 # 반영 하는지 test
                 print("1",s_p.name, s_p.cprice, s_p.industry_code, s_p.diff, s_p.last_update)
-                time_buf = ''
-                s_p.save()                                          # 변경 사항 DB에 저장
+                # s_p.save()                                          # 변경 사항 DB에 저장
             code_string = ""
             continue
 
@@ -134,15 +133,15 @@ def stock_result(request):
         objStockMst.BlockRequest()
         count = objStockMst.GetHeaderValue(0)
         for index in range(count):
-            get_code = objStockMst.GetDataValue(0, index)  # 종목 List 에서 순차적으로 종목코드 탐색
-            s_p = Search.objects.get(code=get_code)  # 해당 종목코드로 search (DB 탐색)
-            s_p.cprice = objStockMst.GetDataValue(3, index)  # 해당 종목 현재가 Instance 업데이트
-            s_p.diff = objStockMst.GetDataValue(4, index)  # 해당 종목 전일대비 Instance 업데이트
-            time_buf = str(objStockMst.GetDataValue(2, index)).zfill(4)
-            s_p.last_update= time_buf[:2] + ':' + time_buf[2:4]
+            get_code = objStockMst.GetDataValue(0, index)               # 종목 List 에서 순차적으로 종목코드 탐색
+            s_p = Search.objects.get(code=get_code)                     # 해당 종목코드로 search (DB 탐색)
+            s_p.cprice = objStockMst.GetDataValue(3, index)             # 해당 종목 현재가 Instance 업데이트
+            s_p.diff = objStockMst.GetDataValue(4, index)               # 해당 종목 전일대비 Instance 업데이트
+            time_buf = str(objStockMst.GetDataValue(2, index)).zfill(4)  # 갱신시각 받아온 후 4자리 채움(9:00일 경우 09:00)
+            s_p.last_update= time_buf[:2] + ':' + time_buf[2:4]         # Cybos time format -> django time format
 
             # 반영 하는지 test
-            print("1", s_p.name, s_p.cprice, s_p.industry_code, s_p.diff, s_p.last_update)
+            # print("1", s_p.name, s_p.cprice, s_p.industry_code, s_p.diff, s_p.last_update)
             s_p.save()
 
     pythoncom.CoUninitialize()
