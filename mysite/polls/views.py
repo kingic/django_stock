@@ -80,7 +80,7 @@ def stock_result(request):
     pythoncom.CoInitialize()
     objCpCybos = win32com.client.Dispatch("CpUtil.CpCybos")      # 연결
     objCpCodeMgr = win32com.client.Dispatch("CpUtil.CpCodeMgr")  # 종목 리스트
-    objStockMst = win32com.client.Dispatch("DsCbo1.StockMstM")   # 복수 종목 검색
+    objStockMst = win32com.client.Dispatch("DsCbo1.StockMst2")   # 복수 종목 검색
     objStockMst1 = win32com.client.Dispatch("DsCbo1.StockMst")   # 단일 종목 검색
 
     bConnect = objCpCybos.IsConnect
@@ -109,18 +109,21 @@ def stock_result(request):
 
     # 검색 종목에 대한 DB 업데이트(110개 단위로)
     for s_obj in s:
-        code_string += s_obj.code
-        if len(code_string) == 770:                     # (전체 종목: 110개) * (종목 당 character: 7글자)
+        code_string += s_obj.code + ','
+        if len(code_string) == 880:                     # (전체 종목: 110개) * (종목 당 character: 7글자)
             objStockMst.SetInputValue(0, code_string)   # 전체 종목에 대한 코드 반환 (max = 110)
             objStockMst.BlockRequest()
             count = objStockMst.GetHeaderValue(0)
             for index in range(count):
                 get_code = objStockMst.GetDataValue(0, index)       # 종목 List 에서 순차적으로 종목코드 탐색
                 s_p = Search.objects.get(code=get_code)             # 해당 종목코드로 search (DB 탐색)
-                s_p.cprice = objStockMst.GetDataValue(4, index)     # 해당 종목 현재가 Instance 업데이트
-                s_p.diff = objStockMst.GetDataValue(2, index)       # 해당 종목 전일대비 Instance 업데이트
+                s_p.cprice = objStockMst.GetDataValue(3, index)     # 해당 종목 현재가 Instance 업데이트
+                s_p.diff = objStockMst.GetDataValue(4, index)       # 해당 종목 전일대비 Instance 업데이트
+                time_buf = str(objStockMst.GetDataValue(2, index)).zfill(4)
+                s_p.last_update = time_buf[:2] + ':' + time_buf[2:4]
                 # 반영 하는지 test
-                print("1",s_p.name, s_p.cprice, s_p.industry_code, s_p.diff)
+                print("1",s_p.name, s_p.cprice, s_p.industry_code, s_p.diff, s_p.last_update)
+                time_buf = ''
                 s_p.save()                                          # 변경 사항 DB에 저장
             code_string = ""
             continue
@@ -131,12 +134,15 @@ def stock_result(request):
         objStockMst.BlockRequest()
         count = objStockMst.GetHeaderValue(0)
         for index in range(count):
-            get_code = objStockMst.GetDataValue(0,index)
-            s_p = Search.objects.get(code=get_code)
-            s_p.cprice = objStockMst.GetDataValue(4, index)
-            s_p.diff = objStockMst.GetDataValue(2, index)
+            get_code = objStockMst.GetDataValue(0, index)  # 종목 List 에서 순차적으로 종목코드 탐색
+            s_p = Search.objects.get(code=get_code)  # 해당 종목코드로 search (DB 탐색)
+            s_p.cprice = objStockMst.GetDataValue(3, index)  # 해당 종목 현재가 Instance 업데이트
+            s_p.diff = objStockMst.GetDataValue(4, index)  # 해당 종목 전일대비 Instance 업데이트
+            time_buf = str(objStockMst.GetDataValue(2, index)).zfill(4)
+            s_p.last_update= time_buf[:2] + ':' + time_buf[2:4]
+
             # 반영 하는지 test
-            print("2",s_p.name, s_p.cprice, s_p.industry_code, s_p.diff)
+            print("1", s_p.name, s_p.cprice, s_p.industry_code, s_p.diff, s_p.last_update)
             s_p.save()
 
     pythoncom.CoUninitialize()
@@ -170,6 +176,7 @@ def db_add(request):
         db = Search(name=name, code=code)
         db.industry_code = industry
         db.industry_name = objCpCodeMgr.GetIndustryName(industry)
+
         db.save()
 
     pythoncom.CoUninitialize()

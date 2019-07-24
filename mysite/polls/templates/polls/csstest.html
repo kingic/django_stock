@@ -54,6 +54,9 @@
         <td class="item">
           전일대비
         </td>
+        <td class="item">
+          갱신시각
+        </td>
       </tr>
       {% if select_list %}
         {% for select in select_list %}
@@ -69,6 +72,9 @@
         </td>
         <td class="diff">
             {{select.diff}}
+        </td>
+        <td class="item">
+            {{select.last_update}}
         </td>
       </tr>
         {% endfor%}

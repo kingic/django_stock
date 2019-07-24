@@ -70,7 +70,7 @@ div.main {
   /*grid-template-columns: repeat(3, auto);*/
   background-color: #478dee;
   color: #444;
-  max-width:  800px;
+  max-width:  850px;
   /*margin: 0 0 0 200px;*/
 }
 
@@ -79,15 +79,15 @@ div.main {
     color: black;
 }
 
-.wrapper tr td:nth-of-type(4n){
+.wrapper tr td:nth-of-type(5n+4){
     background-color: #f2f2f2;
 }
 
-.wrapper tr td:nth-of-type(4n+1){
+.wrapper tr td:nth-of-type(5n+1){
     text-align: left;
 }
 
-.wrapper tr td:nth-of-type(4n+2){
+.wrapper tr td:nth-of-type(5n+2){
     text-align: center;
 }
 
@@ -104,6 +104,7 @@ div.main {
   padding: 20px;
   font-size: 130%;
   text-align: right;
+  max-width: 200px;
 }
 
 .cprice {
@@ -115,8 +116,6 @@ div.main {
   font-size: 130%;
   text-align: right;
 }
-
-
 
 .diff {
   border-radius: 5px;
