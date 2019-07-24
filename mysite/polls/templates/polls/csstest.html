@@ -95,7 +95,7 @@
             var dif = 0;
             console.log('java working...')
             for (i=0;i<num.length;i++){
-              dif = Number((num[i].innerText)/(Number(item_num[i].innerText) - Number(num[i].innerText)));
+              dif = Number((num[i].innerHTML)/(Number(item_num[i].innerHTML) - Number(num[i].innerHTML)));
               dif *= 100;
               dif = dif.toFixed(2);
               if(Number(num[i].innerText) > 0){
@@ -106,9 +106,10 @@
               }
 
 
-              num[i].innerText = numberWithCommas(num[i].innerText);
-              item_num[i].innerText = numberWithCommas(item_num[i].innerText);
-              num[i].innerText += "(" + dif + "%)";
+              num[i].innerHTML = numberWithCommas(num[i].innerHTML);
+              item_num[i].innerHTML = numberWithCommas(item_num[i].innerHTML);
+              num[i].innerHTML += "(" + dif + "%)";
+              console.log('complete',i)
             }
             console.log('java complete!')
 
