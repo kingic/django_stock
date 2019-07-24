@@ -95,7 +95,7 @@
             var dif = 0;
             console.log('javascript working...')
             for (i=0;i<num.length;i++){
-              dif = Number((num[i].innerHTML)/(Number(item_num[i].innerHTML) - Number(num[i].innerHTML)));
+              dif = Number(num[i].innerHTML)/(Number(item_num[i].innerHTML) - Number(num[i].innerHTML));
               dif *= 100;
               dif = dif.toFixed(2);
               if(Number(num[i].innerHTML) > 0){
