@@ -31,11 +31,10 @@
 
     <!-- 사이드 메뉴 -->
     <div class="sidebar">
-      <a class="active" href="http://localhost:8000/polls/stock">Home</a>
-      <a class="active" href="http://localhost:8000/polls/stock_result?stock_name=&stock_code=">전체 종목</a>
+      <a class="active" href="http://localhost:8080/polls/stock_result?stock_name=&stock_code=">전체 종목</a>
       {% if industry_names %}
         {% for code, name in industry_names %}
-          <a href="http://localhost:8000/polls/stock_result?industry_code={{code}}">{{name}}</a>
+          <a href="http://localhost:8080/polls/stock_result?industry_code={{code}}">{{name}}</a>
         {% endfor %}
       {% endif %}
     </div>
@@ -44,13 +43,16 @@
     <table class="wrapper">
       <tr id="title">
         <td class="item">
-        종목명
+          종목명
         </td>
         <td class="item">
-        종목코드
+          종목코드
         </td>
         <td class="item">
-        현재가
+          현재가
+        </td>
+        <td class="item">
+          전일대비
         </td>
       </tr>
       {% if select_list %}
@@ -62,8 +64,11 @@
         <td class="item">
             {{select.code}}
         </td>
-        <td class="item">
+        <td class="cprice">
             {{select.cprice}}
+        </td>
+        <td class="diff">
+            {{select.diff}}
         </td>
       </tr>
         {% endfor%}
@@ -71,12 +76,39 @@
     </table>
 
     <div class="footer">
-    Copyright 2018
+    Copyright 2019 <br/> made by sjKim
     </div>
     </body>
 
     <!-- jQuery (부트스트랩의 자바스크립트 플러그인을 위해 필요합니다) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script>
+            var item_num = document.getElementsByClassName('cprice');
+            var num = document.getElementsByClassName('diff');
+            var dif = 0;
+            for (i=0;i<num.length;i++){
+              dif = Number((num[i].innerText)/(Number(item_num[i].innerText) - Number(num[i].innerText)));
+              dif *= 100;
+              dif = dif.toFixed(2);
+              if(Number(num[i].innerText) > 0){
+                num[i].style.color="red";
+              }
+              else{
+                num[i].style.color="blue";
+              }
+
+
+              num[i].innerText = numberWithCommas(num[i].innerText);
+              item_num[i].innerText = numberWithCommas(item_num[i].innerText);
+              num[i].innerText += "(" + dif + "%)";
+            }
+
+
+            function numberWithCommas(x){
+              return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+
+    </script>
     <!-- 모든 컴파일된 플러그인을 포함합니다 (아래), 원하지 않는다면 필요한 각각의 파일을 포함하세요 -->
     <!--<script src="js/bootstrap.min.js"></script>-->
   </body>

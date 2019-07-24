@@ -79,6 +79,18 @@ div.main {
     color: black;
 }
 
+.wrapper tr td:nth-of-type(4n){
+    background-color: #f2f2f2;
+}
+
+.wrapper tr td:nth-of-type(4n+1){
+    text-align: left;
+}
+
+.wrapper tr td:nth-of-type(4n+2){
+    text-align: center;
+}
+
 #title td{
     text-align: center;
     background-color: #3778d2;
@@ -88,8 +100,27 @@ div.main {
   background-color: #444;
   color: #fff;
   border-radius: 5px;
-  height: 50px;
+  height: 40px;
   padding: 20px;
-  font-size: 150%;
+  font-size: 130%;
+  text-align: right;
+}
+
+.cprice {
+  background-color: #444;
+  color: #fff;
+  border-radius: 5px;
+  height: 40px;
+  padding: 20px;
+  font-size: 130%;
+  text-align: right;
+}
+
+.diff {
+  border-radius: 5px;
+  height: 40px;
+  padding: 20px;
+  font-size: 130%;
+  text-align: right;
 }
 

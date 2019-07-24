@@ -34,6 +34,7 @@ class Search(models.Model):
     cprice = models.IntegerField(default=0)
     industry_code = models.CharField(max_length=20, default='')     # 업종코드 (외부 업종명과 연결시켜야함)
     industry_name = models.CharField(max_length=20, default='')
+    diff = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
