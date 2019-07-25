@@ -141,7 +141,7 @@ def stock_result(request):
             s_p.last_update= time_buf[:2] + ':' + time_buf[2:4]         # Cybos time format -> django time format
 
             # 반영 하는지 test
-            # print("1", s_p.name, s_p.cprice, s_p.industry_code, s_p.diff, s_p.last_update)
+            print("1", s_p.name, s_p.cprice, s_p.industry_code, s_p.diff, s_p.last_update)
             s_p.save()
 
     pythoncom.CoUninitialize()
@@ -161,7 +161,7 @@ def db_add(request):
         print("PLUS가 정상적으로 연결되지 않음. ")
         exit()
 
-    # 종목코드 리스트 구하기
+    # 종목코드 리스트 구하기`
     objStockMst = win32com.client.Dispatch("DsCbo1.StockMst")
     objCpCodeMgr = win32com.client.Dispatch("CpUtil.CpCodeMgr")
     codeList = objCpCodeMgr.GetStockListByMarket(1)  # 거래소
