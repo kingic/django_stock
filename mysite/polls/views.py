@@ -101,7 +101,7 @@ def stock_result(request):
     for code in industry_list:
         industry_name.append((code, objCpCodeMgr.GetIndustryName(code)))
 
-    # 종목명 / 종목코드 관련 검색
+    # 종목명 / 종목코드 db 검색
     code_string = ""
     select_list = Search.objects.all()
     s = select_list.filter(name__icontains=search_name, code__icontains=search_code, industry_code__icontains=search_ic)
@@ -110,7 +110,7 @@ def stock_result(request):
     # 검색 종목에 대한 DB 업데이트(110개 단위로)
     for s_obj in s:
         code_string += s_obj.code + ','
-        if len(code_string) == 880:                     # (전체 종목: 110개) * (종목 당 character: 7글자)
+        if len(code_string) == 880:                     # (전체 종목: 110개) * (종목 당 character: 8글자)
             objStockMst.SetInputValue(0, code_string)   # 전체 종목에 대한 코드 반환 (max = 110)
             objStockMst.BlockRequest()
             count = objStockMst.GetHeaderValue(0)
@@ -141,14 +141,14 @@ def stock_result(request):
             s_p.last_update= time_buf[:2] + ':' + time_buf[2:4]         # Cybos time format -> django time format
 
             # 반영 하는지 test
-            print("1", s_p.name, s_p.cprice, s_p.industry_code, s_p.diff, s_p.last_update)
+            # print("1", s_p.name, s_p.cprice, s_p.industry_code, s_p.diff, s_p.last_update)
             s_p.save()
 
     pythoncom.CoUninitialize()
 
     context = {'select_list': s, 'industry_names': industry_name}
     return render(request, 'polls/csstest.html', context)
-# git test
+
 
 # db 내용 추가(초기에 1회만 실행해주면 됨) / url:polls/stock_add
 def db_add(request):
