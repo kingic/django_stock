@@ -105,8 +105,7 @@ def stock_result(request):
     code_string = ""
     select_list = Search.objects.all()
     s = select_list.filter(name__icontains=search_name, code__icontains=search_code, industry_code__icontains=search_ic)
-    print("through....s:", s.count())
-
+    print("code_string #: ",len(code_string))
     # 검색 종목에 대한 DB 업데이트(110개 단위로)
     for s_obj in s:
         code_string += s_obj.code + ','
@@ -138,13 +137,14 @@ def stock_result(request):
             s_p.cprice = objStockMst.GetDataValue(3, index)             # 해당 종목 현재가 Instance 업데이트
             s_p.diff = objStockMst.GetDataValue(4, index)               # 해당 종목 전일대비 Instance 업데이트
             time_buf = str(objStockMst.GetDataValue(2, index)).zfill(4)  # 갱신시각 받아온 후 4자리 채움(9:00일 경우 09:00)
-            s_p.last_update= time_buf[:2] + ':' + time_buf[2:4]         # Cybos time format -> django time format
+            s_p.last_update = time_buf[:2] + ':' + time_buf[2:4]         # Cybos time format -> django time format
 
             # 반영 하는지 test
             # print("1", s_p.name, s_p.cprice, s_p.industry_code, s_p.diff, s_p.last_update)
             s_p.save()
+        code_string = ""
 
-    pythoncom.CoUninitialize()
+    # pythoncom.CoUninitialize()
 
     context = {'select_list': s, 'industry_names': industry_name}
     return render(request, 'polls/csstest.html', context)
